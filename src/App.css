@@ -1,0 +1,83 @@
+/* Reset App.css */
+#root {
+  width: 100%;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+  background: white;
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.doc-card {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  background: white;
+  border: 1px solid #edf2f7;
+  transition: transform 0.2s ease;
+}
+
+.doc-card:hover {
+  transform: translateX(5px);
+  border-color: var(--accent);
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-error { background: #fee2e2; color: #991b1b; }
+.badge-missing { background: #ffedd5; color: #c2410c; }
+
+.upload-zone {
+  border: 2px dashed #cbd5e1;
+  padding: 3rem;
+  border-radius: var(--radius);
+  text-align: center;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+
+.upload-zone:hover {
+  border-color: var(--accent);
+  background: #eff6ff;
+}
