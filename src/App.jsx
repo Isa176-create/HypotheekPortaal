@@ -47,7 +47,7 @@ const INITIAL_DOCS = [
   { id: '2-3', phase: 2, isRequired: true, name: 'Energielabel van de woning', status: 'missing', type: 'Woning' },
   
   { id: '3-1', phase: 3, isRequired: true, name: 'Documenten Fase 1 & 2 actueel (<3 mnd)', status: 'missing', type: 'Controle' },
-  { id: '3-2', phase: 3, isRequired: true, name: 'NHG-aanvraagformulier (optioneel)', status: 'missing', type: 'Aanvraag' },
+  { id: '3-2', phase: 3, isRequired: true, name: 'NHG-aanvraagformulier (indien van toepassing)', status: 'missing', type: 'Aanvraag' },
   { id: '3-3', phase: 3, isRequired: true, name: 'Getekende hypotheekofferte', status: 'missing', type: 'Aanvraag' },
 ];
 
@@ -55,9 +55,9 @@ const WORK_SITUATIONS = {
   loondienst: {
     title: 'Inkomen: Loondienst',
     docs: [
-      { name: 'Arbeidscontract (vast of tijdelijk — vermeld type)', type: 'Inkomen' },
+      { name: 'Arbeidscontract', type: 'Inkomen' },
       { name: 'Laatste 3 loonstroken', type: 'Inkomen' },
-      { name: 'Werkgeversverklaring (hypotheekformulier)', type: 'Inkomen' },
+      { name: 'Werkgeversverklaring', type: 'Inkomen' },
       { name: 'Jaaropgave laatste jaar', type: 'Inkomen' }
     ]
   },
@@ -79,7 +79,7 @@ const HOUSING_SITUATIONS = {
   starter: {
     title: 'Doel: Starter (eerste koopwoning)',
     docs: [
-      { name: 'Bewijs van eigen inbreng (spaarbewijs)', type: 'Vermogen' },
+      { name: 'Bewijs van eigen inbreng', type: 'Vermogen' },
       { name: 'Schenkingsverklaring ouders (indien van toepassing)', type: 'Vermogen' },
       { name: 'Overzicht studieschuld bij DUO (indien van toepassing)', type: 'Schulden' },
       { name: 'Verklaring geen eerder gebruik startersvrijstelling', type: 'Verklaring' }
@@ -496,9 +496,6 @@ const ClientDashboard = ({ user, documents, appData, onUpload, onCustomUpload, o
       <div className="dashboard-grid">
         <aside className="sidebar">
           <a href="#" className="nav-item active"><LayoutDashboard size={20} /> Overzicht</a>
-          <a href="#" className="nav-item"><FileText size={20} /> Documenten</a>
-          <a href="#" className="nav-item"><Clock size={20} /> Historie</a>
-          <a href="#" className="nav-item"><User size={20} /> Profiel</a>
         </aside>
 
         <main>
@@ -738,7 +735,6 @@ const AdvisorDashboard = ({ user, appData, onDocAction, onSendInvite, onResponse
       <div className="dashboard-grid">
         <aside className="sidebar">
           <a href="#" className="nav-item active"><Users size={20} /> Klanten</a>
-          <a href="#" className="nav-item"><Clock size={20} /> Activiteit</a>
         </aside>
 
         <main>
