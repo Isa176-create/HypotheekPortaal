@@ -259,6 +259,15 @@ const PhaseProgress = ({ documents }) => {
 }
 
 const DocCardClient = ({ doc, isUploading, activeUploadId, triggerUpload, setPreviewDoc }) => {
+  const [showUploadForm, setShowUploadForm] = useState(false);
+  const [clientNote, setClientNote] = useState('');
+
+  const handleUploadConfirm = () => {
+    setShowUploadForm(false);
+    triggerUpload(doc.id, clientNote);
+    setClientNote('');
+  };
+
   return (
     <div className="doc-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', opacity: (isUploading && activeUploadId === doc.id) ? 0.5 : 1 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
@@ -285,7 +294,7 @@ const DocCardClient = ({ doc, isUploading, activeUploadId, triggerUpload, setPre
           )}
           <button 
             className="btn-outline" 
-            onClick={() => triggerUpload(doc.id)}
+            onClick={() => setShowUploadForm(!showUploadForm)}
             style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem' }}
             disabled={doc.status === 'accepted' || isUploading}
           >
@@ -293,6 +302,31 @@ const DocCardClient = ({ doc, isUploading, activeUploadId, triggerUpload, setPre
           </button>
         </div>
       </div>
+      
+      {showUploadForm && (
+        <div style={{ marginTop: '1rem', padding: '1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <label style={{ fontSize: '0.875rem', fontWeight: '600' }}>Beschrijving (optioneel)</label>
+          <input 
+            type="text"
+            value={clientNote}
+            onChange={e => setClientNote(e.target.value)}
+            placeholder="Voeg een toelichting toe voor je adviseur..."
+            className="btn-outline"
+            style={{ padding: '0.5rem 1rem', borderRadius: '8px' }}
+          />
+          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+            <button onClick={() => setShowUploadForm(false)} className="btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem' }}>Annuleren</button>
+            <button onClick={handleUploadConfirm} className="btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem' }}>Kies Bestand</button>
+          </div>
+        </div>
+      )}
+
+      {doc.clientNote && !showUploadForm && (
+        <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+          <strong>Jouw toelichting:</strong> {doc.clientNote}
+        </div>
+      )}
+
       {doc.note && doc.status === 'rejected' && (
         <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#fee2e2', color: '#991b1b', borderRadius: '8px', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
           <AlertCircle size={16} style={{ marginTop: '2px', flexShrink: 0 }} />
@@ -435,6 +469,7 @@ const ClientDashboard = ({ user, documents, appData, onUpload, onCustomUpload, o
   const customFileInputRef = useRef(null);
   
   const [activeUploadId, setActiveUploadId] = useState(null);
+  const [activeUploadNote, setActiveUploadNote] = useState('');
   const [activeCustomPhase, setActiveCustomPhase] = useState(null);
   const [customDocName, setCustomDocName] = useState('');
   
@@ -444,8 +479,9 @@ const ClientDashboard = ({ user, documents, appData, onUpload, onCustomUpload, o
   const completed = documents.filter(d => d.status === 'accepted').length;
   const progress = Math.round((completed / documents.length) * 100) || 0;
 
-  const triggerUpload = (id) => {
+  const triggerUpload = (id, note = '') => {
     setActiveUploadId(id);
+    setActiveUploadNote(note);
     fileInputRef.current?.click();
   };
 
@@ -459,11 +495,12 @@ const ClientDashboard = ({ user, documents, appData, onUpload, onCustomUpload, o
     const file = e.target.files?.[0];
     if (file && activeUploadId) {
       setIsUploading(true);
-      await onUpload(activeUploadId, file);
+      await onUpload(activeUploadId, file, activeUploadNote);
       setIsUploading(false);
     }
     if (fileInputRef.current) fileInputRef.current.value = null;
     setActiveUploadId(null);
+    setActiveUploadNote('');
   };
 
   const handleCustomFileChange = async (e) => {
@@ -652,6 +689,12 @@ const ClientDossierView = ({ client, documents, onBack, onDocAction, onUpdatePip
                     </div>
                   </div>
                 </div>
+
+                {doc.clientNote && (
+                  <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#f8fafc', borderRadius: '6px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                    <strong>Toelichting van klant:</strong> {doc.clientNote}
+                  </div>
+                )}
 
                 {rejectingDocId === doc.id && (
                   <div style={{ marginTop: '1rem', padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -991,13 +1034,13 @@ function App() {
     return null;
   };
 
-  const handleUpload = (docId, file) => {
+  const handleUpload = (docId, file, clientNote = '') => {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64data = reader.result;
         const userDocs = data.docs[currentUser.email].map(doc => 
-          doc.id === docId ? { ...doc, status: 'pending', fileData: base64data, fileName: file.name } : doc
+          doc.id === docId ? { ...doc, status: 'pending', fileData: base64data, fileName: file.name, clientNote } : doc
         );
         const newData = { ...data, docs: { ...data.docs, [currentUser.email]: userDocs } };
         setData(newData);
