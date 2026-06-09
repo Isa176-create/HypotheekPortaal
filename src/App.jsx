@@ -39,6 +39,7 @@ const PHASES_BASE = [
 
 const INITIAL_DOCS = [
   { id: '1-1', phase: 1, isRequired: true, name: 'Geldig paspoort of ID-kaart (beide kanten)', status: 'missing', type: 'Identiteit' },
+  { id: '1-2', phase: 1, isRequired: true, name: 'Pensioenoverzicht (via mijnpensioenoverzicht.nl)', status: 'missing', type: 'Inkomen' },
   { id: '1-5', phase: 1, isRequired: true, name: 'Bankafschriften laatste 3 maanden', status: 'missing', type: 'Vermogen' },
   { id: '1-6', phase: 1, isRequired: true, name: 'Overzicht lopende leningen of schulden', status: 'missing', type: 'Schulden' },
   
